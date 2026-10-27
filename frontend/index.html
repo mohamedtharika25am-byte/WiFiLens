@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WiFiLens — See. Measure. Map. Optimize.</title>
+  <meta name="description" content="WiFiLens is a professional Wi-Fi monitoring, heatmap visualization, and network diagnostics system.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo-wrap">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+          <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+          <line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">WiFiLens</h1>
+        <p class="brand-tagline">See. Measure. Map. Optimize.</p>
+      </div>
+    </div>
+
+    <div class="header-status-group">
+      <div id="header-status-pill" class="status-pill connected">
+        <span class="status-dot"></span>
+        <span id="header-status-text">Live Telemetry</span>
+      </div>
+
+      <button id="btn-phone-pairing" class="btn-header" title="Pair Mobile Phone Scanner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+        Phone Scanner (QR)
+      </button>
+
+      <button id="btn-sample-now" class="btn-header primary" title="Capture sample to database">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Sample Now
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="app-nav">
+    <button class="nav-tab active" data-tab="tab-overview">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Overview &amp; Live Monitor
+    </button>
+    <button class="nav-tab" data-tab="tab-heatmap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      Heatmap &amp; Floor Plan
+    </button>
+    <button class="nav-tab" data-tab="tab-channels">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h20"/><path d="M6 16a6 6 0 0 1 12 0"/><path d="M10 16a2 2 0 0 1 4 0"/></svg>
+      Channel Spectrum
+    </button>
+    <button class="nav-tab" data-tab="tab-devices">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Connected Devices
+    </button>
+    <button class="nav-tab" data-tab="tab-diagnostics">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Diagnostics &amp; Health
+    </button>
+    <button class="nav-tab" data-tab="tab-history">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+      History &amp; Analytics
+    </button>
+    <button class="nav-tab" data-tab="tab-settings">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      10-Min Monitoring Config
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: OVERVIEW & LIVE MONITOR -->
+    <!-- ========================================== -->
+    <section id="tab-overview" class="tab-pane active">
+      
+      <!-- Top Summary Metrics Grid -->
+      <div class="grid-top-metrics">
+        <!-- Active Network Card -->
+        <div class="glass-card metric-card">
+          <div class="metric-label-row">
+            <span class="metric-name">Active Access Point</span>
+            <div class="metric-icon-wrap" style="color:var(--accent-cyan)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            </div>
+          </div>
+          <div>
+            <h2 id="val-ssid" style="font-size:24px;font-weight:700;color:#fff">Scanning...</h2>
+            <p id="val-bssid" class="metric-subtext">BSSID: Negotiating</p>
+          </div>
+          <div class="metric-subtext" style="margin-top:14px">
+            <span id="val-standard" class="status-pill connected" style="padding:2px 8px;font-size:11px">Wi-Fi 6</span>
+            <span id="val-band" style="color:var(--text-muted)">5 GHz</span>
+          </div>
+        </div>
+
+        <!-- Signal Strength Gauge Card -->
+        <div class="glass-card metric-card">
+          <div class="metric-label-row">
+            <span class="metric-name">Wi-Fi RF Signal</span>
+            <span id="val-signal-pct" class="status-pill connected" style="padding:2px 8px;font-size:11px">--%</span>
+          </div>
+          <div class="gauge-container">
+            <div class="circular-gauge">
+              <svg class="gauge-svg" viewBox="0 0 100 100">
+                <circle class="gauge-bg" cx="50" cy="50" r="45"/>
+                <circle id="signal-gauge-bar" class="gauge-bar" cx="50" cy="50" r="45" stroke-dasharray="282.7" stroke-dashoffset="282.7" stroke="#00f2fe"/>
+              </svg>
+              <div class="gauge-center-content">
+                <div id="signal-gauge-num" class="gauge-number">--</div>
+                <div class="gauge-label">dBm</div>
+              </div>
+            </div>
+          </div>
+          <div class="metric-subtext" style="justify-content:center">
+            Link Rate: <strong id="val-link-rate" style="color:#fff">-- / -- Mbps</strong>
+          </div>
+        </div>
+
+        <!-- Internet Throughput Card -->
+        <div class="glass-card metric-card">
+          <div class="metric-label-row">
+            <span class="metric-name">Internet Speed (WAN)</span>
+            <button id="btn-run-speedtest" class="btn-header" style="padding:4px 10px;font-size:11px">Test Speed Now</button>
+          </div>
+          <div style="display:flex;gap:20px;align-items:center;margin:12px 0">
+            <div>
+              <div class="metric-subtext" style="margin:0 0 4px 0">DOWNLOAD</div>
+              <div class="metric-value-row">
+                <span id="val-dl-speed" class="metric-value" style="color:var(--accent-emerald)">--</span>
+                <span class="metric-unit">Mbps</span>
+              </div>
+            </div>
+            <div style="border-left:1px solid rgba(255,255,255,0.1);padding-left:20px">
+              <div class="metric-subtext" style="margin:0 0 4px 0">UPLOAD</div>
+              <div class="metric-value-row">
+                <span id="val-ul-speed" class="metric-value" style="color:var(--accent-blue)">--</span>
+                <span class="metric-unit">Mbps</span>
+              </div>
+            </div>
+          </div>
+          <p class="metric-subtext">True WAN Throughput via Cloud CDN Stream</p>
+        </div>
+
+        <!-- Latency & Stability Card -->
+        <div class="glass-card metric-card">
+          <div class="metric-label-row">
+            <span class="metric-name">Latency &amp; Stability</span>
+            <div class="metric-icon-wrap" style="color:var(--accent-amber)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin:10px 0">
+            <div>
+              <div class="metric-subtext" style="margin:0">Wi-Fi Hop Ping</div>
+              <div id="val-wifi-hop" style="font-size:22px;font-weight:700;color:#fff">-- ms</div>
+            </div>
+            <div>
+              <div class="metric-subtext" style="margin:0">Internet Latency</div>
+              <div id="val-inet-latency" style="font-size:22px;font-weight:700;color:var(--accent-cyan)">-- ms</div>
+            </div>
+            <div>
+              <div class="metric-subtext" style="margin:0">Packet Loss</div>
+              <div id="val-packet-loss" style="font-size:22px;font-weight:700;color:var(--accent-emerald)">0.0%</div>
+            </div>
+          </div>
+          <p class="metric-subtext">Physical RF Hop vs Internet Cloud Round-Trip</p>
+        </div>
+      </div>
+
+      <!-- Distinction & Architecture Banner -->
+      <div class="glass-card" style="margin-bottom:24px;border-left:4px solid var(--accent-cyan)">
+        <div style="display:flex;gap:16px;align-items:flex-start">
+          <div style="font-size:24px">ℹ️</div>
+          <div>
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:4px">Engineering Principle: Wi-Fi Signal vs. Internet Speed</h3>
+            <p style="font-size:13px;color:var(--text-muted);line-height:1.5">
+              <strong>Wi-Fi Signal (dBm)</strong> measures the physical RF link strength and attenuation between this laptop/phone and the Access Point antenna.<br>
+              <strong>Internet Speed (Mbps)</strong> measures WAN data transfer throughput across your gateway router and ISP fiber uplink. A strong signal (-42 dBm) with low internet speed indicates a WAN/ISP bottleneck, not a wireless issue.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: HEATMAP & FLOOR PLAN STUDIO -->
+    <!-- ========================================== -->
+    <section id="tab-heatmap" class="tab-pane">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title">Interactive Floor Plan Heatmap Studio</h2>
+          <p class="card-subtitle">Spatial RF coverage interpolation using Inverse Distance Weighting (IDW) algorithms.</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button id="btn-open-upload-modal" class="btn-header" onclick="document.getElementById('modal-upload-floorplan').classList.add('active')">
+            Upload Floor Plan
+          </button>
+          <button id="btn-export-heatmap" class="btn-header primary">
+            Export Heatmap PNG
+          </button>
+        </div>
+      </div>
+
+      <!-- Floor Plan Toolbar -->
+      <div class="floorplan-toolbar">
+        <!-- Interaction Modes -->
+        <div class="toolbar-group">
+          <span style="font-size:12px;font-weight:600;color:var(--text-muted)">MODE:</span>
+          <button class="toolbar-btn tool-mode-btn active" data-mode="survey">
+            📍 Survey Sample Point
+          </button>
+          <button class="toolbar-btn tool-mode-btn" data-mode="ap_marker">
+            📡 Place AP Marker
+          </button>
+          <button class="toolbar-btn tool-mode-btn" data-mode="calibrate">
+            📏 Calibrate Scale (Meters)
+          </button>
+          <button class="toolbar-btn tool-mode-btn" data-mode="pan">
+            ✋ Pan / Move
+          </button>
+        </div>
+
+        <!-- Metric Switcher -->
+        <div class="toolbar-group">
+          <span style="font-size:12px;font-weight:600;color:var(--text-muted)">LAYER:</span>
+          <button class="toolbar-btn btn-metric active" data-metric="rssi">Signal (dBm)</button>
+          <button class="toolbar-btn btn-metric" data-metric="download">Speed (Mbps)</button>
+          <button class="toolbar-btn btn-metric" data-metric="latency">Latency (ms)</button>
+          <button class="toolbar-btn btn-metric" data-metric="health">Health Score</button>
+        </div>
+
+        <!-- Weak Zone Toggle -->
+        <div class="toolbar-group">
+          <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-muted)">
+            <input type="checkbox" id="toggle-weak-zones" checked>
+            Highlight Weak Zones (&lt; -75 dBm)
+          </label>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div class="canvas-viewport-container">
+        <canvas id="floorplan-canvas"></canvas>
+
+        <!-- Tooltip -->
+        <div id="canvas-tooltip" style="display:none;position:absolute;background:rgba(15,23,42,0.95);border:1px solid var(--accent-cyan);border-radius:8px;padding:8px 12px;font-size:12px;color:#fff;pointer-events:none;z-index:20;box-shadow:0 4px 15px rgba(0,0,0,0.5)"></div>
+
+        <!-- Dynamic Legend -->
+        <div class="canvas-legend">
+          <div id="legend-metric-title" class="legend-title">Signal Strength (dBm)</div>
+          <div id="legend-gradient-bar" class="legend-bar" style="background:linear-gradient(to right, #dc2626, #f59e0b, #eab308, #10b981, #00f2fe);"></div>
+          <div class="legend-labels">
+            <span id="legend-min-label">-90 dBm (Weak)</span>
+            <span id="legend-max-label">-45 dBm (Strong)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: CHANNEL SPECTRUM ANALYZER -->
+    <!-- ========================================== -->
+    <section id="tab-channels" class="tab-pane">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title">RF Spectrum &amp; Channel Congestion</h2>
+          <p class="card-subtitle">Real-time spectral analysis of 2.4 GHz and 5 GHz frequency bands with interference modeling.</p>
+        </div>
+      </div>
+
+      <!-- Recommendations Cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+        <div class="glass-card">
+          <div class="metric-name" style="margin-bottom:8px">Recommended 2.4 GHz Channel</div>
+          <div id="rec-channel-24" style="font-size:26px;font-weight:700;color:var(--accent-cyan)">Channel 1</div>
+          <p class="metric-subtext">Cleanest airtime with lowest adjacent &amp; co-channel interference.</p>
+        </div>
+
+        <div class="glass-card">
+          <div class="metric-name" style="margin-bottom:8px">Recommended 5 GHz Channel</div>
+          <div id="rec-channel-5" style="font-size:26px;font-weight:700;color:var(--accent-emerald)">Channel 36 (UNII-1)</div>
+          <p class="metric-subtext">Wide 80/160 MHz channel with zero radar DFS contention.</p>
+        </div>
+      </div>
+
+      <!-- 2.4 GHz Spectrum Canvas -->
+      <div class="glass-card" style="margin-bottom:20px">
+        <h3 class="card-title" style="font-size:15px;margin-bottom:12px">2.4 GHz Band Distribution (Channels 1 - 13)</h3>
+        <div class="spectrum-canvas-wrap">
+          <canvas id="spectrum-24-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- 5 GHz Spectrum Canvas -->
+      <div class="glass-card">
+        <h3 class="card-title" style="font-size:15px;margin-bottom:12px">5 GHz Band Distribution (UNII-1, UNII-2, UNII-3)</h3>
+        <div class="spectrum-canvas-wrap">
+          <canvas id="spectrum-5-canvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: CONNECTED DEVICES -->
+    <!-- ========================================== -->
+    <section id="tab-devices" class="tab-pane">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title">Subnet Devices Discovery</h2>
+          <p class="card-subtitle">Real local network active host discovery via ARP cache and NetBIOS/OUI lookup.</p>
+        </div>
+        <span id="devices-count-badge" class="status-pill connected">0 Active Hosts</span>
+      </div>
+
+      <!-- Real Traffic Disclaimer Banner (Prompt Requirement 11 & 18) -->
+      <div class="glass-card" style="margin-bottom:18px;border-left:4px solid var(--accent-amber)">
+        <p style="font-size:13px;color:var(--text-muted)">
+          <strong>Telemetry Notice:</strong> Traffic statistics unavailable for this network. WiFiLens strictly displays real measurements and never simulates fake client bandwidth consumption.
+        </p>
+      </div>
+
+      <div class="glass-card" style="padding:0;overflow:hidden">
+        <table class="lens-table">
+          <thead>
+            <tr>
+              <th>Host Identification</th>
+              <th>IP Address</th>
+              <th>MAC Address</th>
+              <th>Hardware Vendor (OUI)</th>
+              <th>Status</th>
+              <th>Bandwidth Usage</th>
+            </tr>
+          </thead>
+          <tbody id="devices-table-body">
+            <tr>
+              <td colspan="6" style="text-align:center;color:var(--text-dim);padding:30px">
+                Scanning ARP table for connected hosts...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: DIAGNOSTICS & HEALTH SCORE -->
+    <!-- ========================================== -->
+    <section id="tab-diagnostics" class="tab-pane">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title">Network Health &amp; Rule-Based Diagnostics</h2>
+          <p class="card-subtitle">Explainable 0-100 Wi-Fi Health composite score with transparent parameter weighting.</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:320px 1fr;gap:24px;margin-bottom:24px">
+        <!-- Health Score Overall Card -->
+        <div class="glass-card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+          <div class="metric-name" style="margin-bottom:12px">Wi-Fi Health Score</div>
+          <div class="circular-gauge" style="width:180px;height:180px">
+            <svg class="gauge-svg" viewBox="0 0 100 100">
+              <circle class="gauge-bg" cx="50" cy="50" r="45"/>
+              <circle id="health-gauge-bar" class="gauge-bar" cx="50" cy="50" r="45" stroke-dasharray="282.7" stroke-dashoffset="0" stroke="var(--accent-emerald)"/>
+            </svg>
+            <div class="gauge-center-content">
+              <div id="health-score-num" class="gauge-number" style="font-size:42px">--</div>
+              <div id="health-score-rating" class="gauge-label" style="font-size:14px;color:var(--accent-emerald);font-weight:700">Optimal</div>
+            </div>
+          </div>
+          <p class="metric-subtext" style="margin-top:16px">Calculated from physical RF signal, hop latency, packet loss, speed, and interference.</p>
+        </div>
+
+        <!-- Breakdown Bars -->
+        <div class="glass-card">
+          <h3 class="card-title" style="font-size:16px;margin-bottom:16px">Transparent Scoring Breakdown</h3>
+          
+          <div id="breakdown-signal" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>Physical Signal Strength (30%)</span>
+              <span class="bar-label" style="color:var(--accent-cyan)">Evaluating...</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+              <div class="bar-fill" style="width:90%;height:100%;background:var(--accent-cyan);transition:width 0.5s"></div>
+            </div>
+          </div>
+
+          <div id="breakdown-latency" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>Hop Latency &amp; Responsiveness (25%)</span>
+              <span class="bar-label" style="color:var(--accent-emerald)">Evaluating...</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+              <div class="bar-fill" style="width:95%;height:100%;background:var(--accent-emerald);transition:width 0.5s"></div>
+            </div>
+          </div>
+
+          <div id="breakdown-loss" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>Packet Loss &amp; Stability (20%)</span>
+              <span class="bar-label" style="color:var(--accent-emerald)">Evaluating...</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+              <div class="bar-fill" style="width:100%;height:100%;background:var(--accent-emerald);transition:width 0.5s"></div>
+            </div>
+          </div>
+
+          <div id="breakdown-speed" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>Throughput Speed (15%)</span>
+              <span class="bar-label" style="color:var(--accent-blue)">Evaluating...</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+              <div class="bar-fill" style="width:85%;height:100%;background:var(--accent-blue);transition:width 0.5s"></div>
+            </div>
+          </div>
+
+          <div id="breakdown-congestion" style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+              <span>Channel Contention (10%)</span>
+              <span class="bar-label" style="color:var(--accent-amber)">Evaluating...</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden">
+              <div class="bar-fill" style="width:80%;height:100%;background:var(--accent-amber);transition:width 0.5s"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actionable Insights List -->
+      <div class="glass-card">
+        <h3 class="card-title" style="margin-bottom:16px">Diagnostic Engine Insights &amp; Recommendations</h3>
+        <div id="diagnostics-insights-list" style="display:flex;flex-direction:column;gap:12px">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 6: HISTORY & ANALYTICS -->
+    <!-- ========================================== -->
+    <section id="tab-history" class="tab-pane">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title">Telemetry History &amp; Time Series</h2>
+          <p class="card-subtitle">Historical monitoring data stored from 10-minute periodic background logging.</p>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:20px">
+        <h3 class="card-title" style="font-size:15px;margin-bottom:8px">Signal Strength Over Time (dBm)</h3>
+        <canvas id="history-rssi-canvas"></canvas>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:20px">
+        <h3 class="card-title" style="font-size:15px;margin-bottom:8px">Download Throughput Over Time (Mbps)</h3>
+        <canvas id="history-speed-canvas"></canvas>
+      </div>
+
+      <div class="glass-card">
+        <h3 class="card-title" style="font-size:15px;margin-bottom:8px">Latency &amp; Ping Over Time (ms)</h3>
+        <canvas id="history-latency-canvas"></canvas>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 7: 10-MINUTE MONITORING SETTINGS -->
+    <!-- ========================================== -->
+    <section id="tab-settings" class="tab-pane">
+      <div class="card-header-flex">
+        <div>
+          <h2 class="card-title">10-Minute Periodic Monitoring Configuration</h2>
+          <p class="card-subtitle">Automated background telemetry sampling and storage engine.</p>
+        </div>
+      </div>
+
+      <div class="glass-card" style="max-width:680px">
+        <form id="settings-form">
+          <div style="margin-bottom:20px">
+            <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:#fff">
+              Sampling Interval (Default: 10 Minutes)
+            </label>
+            <select id="setting-interval" style="width:100%;padding:10px 14px;background:#0d1527;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:14px">
+              <option value="60">1 Minute (Rapid Diagnostic)</option>
+              <option value="300">5 Minutes</option>
+              <option value="600" selected>10 Minutes (Standard Background Default)</option>
+              <option value="1800">30 Minutes</option>
+              <option value="3600">60 Minutes (Long-term Trend)</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#fff;cursor:pointer">
+              <input type="checkbox" id="setting-enabled" checked>
+              <strong>Enable Automatic Background Logging</strong>
+            </label>
+            <p class="metric-subtext">Stores timestamp, SSID, BSSID, RSSI, channel, frequency, band, and hop latency into SQLite database.</p>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#fff;cursor:pointer">
+              <input type="checkbox" id="setting-speed-interval">
+              <strong>Execute Speed Test on Every Interval</strong>
+            </label>
+            <p class="metric-subtext">Off by default to save network bandwidth. Ping and Wi-Fi signal are always sampled.</p>
+          </div>
+
+          <button type="submit" class="btn-header primary" style="width:100%;justify-content:center;padding:12px">
+            Save Monitoring Settings
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: PHONE PAIRING QR CODE -->
+  <!-- ========================================== -->
+  <div id="modal-phone-pairing" class="modal-overlay">
+    <div class="modal-dialog">
+      <button id="btn-close-pair-modal" class="modal-close-btn">&times;</button>
+      <h2 style="font-family:var(--font-display);font-size:22px;margin-bottom:8px;color:#fff">Pair Mobile Phone Scanner</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">
+        Connect your phone to the same Wi-Fi network and scan the QR code to launch the mobile survey &amp; AR camera HUD!
+      </p>
+
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;background:#090e17;border-radius:12px;margin-bottom:16px">
+        <img id="pair-qr-img" src="" alt="Pairing QR Code" style="width:200px;height:200px;border-radius:8px">
+      </div>
+
+      <div style="text-align:center">
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Or open URL on phone browser:</p>
+        <a id="pair-mobile-url" href="#" target="_blank" style="color:var(--accent-cyan);font-weight:600;font-size:14px;word-break:break-all"></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: UPLOAD FLOOR PLAN -->
+  <!-- ========================================== -->
+  <div id="modal-upload-floorplan" class="modal-overlay">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="document.getElementById('modal-upload-floorplan').classList.remove('active')">&times;</button>
+      <h2 style="font-family:var(--font-display);font-size:22px;margin-bottom:8px;color:#fff">Upload Architectural Floor Plan</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:18px">Supports PNG, JPG, or SVG architectural blueprints.</p>
+
+      <form id="form-upload-floorplan">
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted)">Floor Plan Name / Label</label>
+          <input type="text" name="name" required placeholder="e.g. 2nd Floor Office Blueprint" style="width:100%;padding:10px 12px;background:#0d1527;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff">
+        </div>
+
+        <div style="margin-bottom:20px">
+          <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text-muted)">Select Blueprint File</label>
+          <input type="file" name="file" accept="image/*,.svg" required style="width:100%;color:var(--text-muted)">
+        </div>
+
+        <button type="submit" class="btn-header primary" style="width:100%;justify-content:center;padding:12px">
+          Upload &amp; Set as Active Floor Plan
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="/js/heatmap_engine.js"></script>
+  <script src="/js/floorplan.js"></script>
+  <script src="/js/channel_charts.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>
