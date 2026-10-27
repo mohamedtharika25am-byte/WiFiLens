@@ -47,18 +47,21 @@ def print_banner(host_ip: str, port: int):
     print(banner)
 
 
+def is_port_in_use(port: int) -> bool:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.5)
+            return s.connect_ex(('127.0.0.1', port)) == 0
+    except Exception:
+        return False
+
+
 def find_free_port(preferred_port: int = 8000) -> int:
-    """Checks if preferred port is free; if not, finds an open port."""
+    """Checks if preferred port is free; if occupied, finds next open port."""
     for p in [preferred_port, 8500, 8080, 8888, 9000]:
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind(("0.0.0.0", p))
-            s.close()
+        if not is_port_in_use(p):
             return p
-        except OSError:
-            continue
-    return preferred_port
+    return 8500
 
 
 def main():
